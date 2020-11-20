@@ -1,4 +1,5 @@
 function output () {
-  console.log('otherJs 输出1111!');
+
+  console.log(a);
 }
 export default output

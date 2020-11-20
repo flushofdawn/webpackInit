@@ -67,7 +67,7 @@ module.exports = {
           错误代码准确位置 和 源代码的错误位置
 
         hidden-source-map ： 外部
-          错误代码错误原因 没有错误位置 不能追踪源代码错误，智能提示构建后的代码错误位置
+          错误代码错误原因 没有错误位置 不能追踪源代码错误，但是会提示构建后的代码错误位置
 
         eval-source-map ：   内联 （每个文件都生成一个内联的source-map ，都在eval函数中）
           错误代码准确位置 和 源代码的错误位置 生成文件 带有hash值
@@ -86,6 +86,20 @@ module.exports = {
           1.外部 生成了文件，内联 在代码内部生成map文件  
           2.内联构建速度更快
 
+
+        开发环境：
+          要求速度块，调试更加友好  模式速度 快 -> 慢（ eval > inline > cheap > .... ） 具体见    /asset/images/source-map构建速度.png
+
+            推荐  eval-source-map  (vue react 框架开发环境默认使用的类型)
+                  eval-cheap-source-map
+
+        生产环境：
+          源代码是否隐藏？         调试是否需要更加友好？（根据项目来做判断）
+           hidden-source-map     只隐藏源代码，会提示构建后的代码错误位置     
+           nosources-source-map  全部隐藏
+           （ !!! 不使用内联，原因：会使单个文件代码体积过大，所以在生产环境不推荐内联的source-map ）
+           推荐  source-map / cheap-source-map
+
   */
-  devtool: 'source-map'
+  devtool: 'eval'
 }
