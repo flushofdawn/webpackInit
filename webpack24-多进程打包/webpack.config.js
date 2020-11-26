@@ -6,20 +6,9 @@ const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plug
 const workboxWebpackPlugin = require("workbox-webpack-plugin");
 
 /* 
-  PWA: 渐进式网络开发应用程序（离线可访问）
-    workbox --> workbox-webpack-plugin
-      注意事项：
-        1、eslint不认识window、navigator全局变量
-          解决: 需要修改package.json中eslintConfig配置
-          eslintConfig -->
-              "env": {
-                "browser": true
-              }
-          2、sw代码必须运行再服务器上
-            方案1. --> 自己搭 nodejs
-            方案2  --> npm i serve -g
-              
+  1. 下载 npm i thread-loader -D
 */
+
 process.env.NODE_ENV = 'production'
 
 const commonCssLoader = [
@@ -80,26 +69,41 @@ module.exports = {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env',
-                {
-                  useBuiltIns: 'usage',
-                  corejs: { version: 3 },
-                  targets: {
-                    chrome: '60',
-                    firefox: '50',
-                    edge: '17',
-                    ie: '8'
-                  }
-                }
-              ]
-            ],
-            //开启babel缓存
-            //第二次构建时，会读取之前的缓存
-            cacheDirectory: true
-          }
+          use: [
+            /* 
+                开启多进程打包
+                进程启动大概需要 600ms ，进程通讯也有开销。
+                只有工作消耗时间比较长，才需要多进程打包。
+            */
+            {
+              loader: 'thread-loader',
+              options: {
+                workers: 2,
+              }
+            },
+            {
+              loader: 'babel-loader',
+              options: {
+                presets: [
+                  ['@babel/preset-env',
+                    {
+                      useBuiltIns: 'usage',
+                      corejs: { version: 3 },
+                      targets: {
+                        chrome: '60',
+                        firefox: '50',
+                        edge: '17',
+                        ie: '8'
+                      }
+                    }
+                  ]
+                ],
+                //开启babel缓存
+                //第二次构建时，会读取之前的缓存
+                cacheDirectory: true
+              }
+            }
+          ]
         },
         {
           test: /\.(png|jpg|gif|jpeg)$/,
