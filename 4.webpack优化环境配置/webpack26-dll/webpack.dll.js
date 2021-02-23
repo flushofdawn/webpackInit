@@ -1,5 +1,5 @@
 /* 
-  使用dll技术，对某些库（ 第三方库：jquery、react、vue... ）进行单独打包
+  使用dll(动态链接库英文为DLL，Dynamic Link Library)技术，对某些库（ 第三方库：jquery、react、vue... ）进行单独打包
   当你运行webpack时，默认查找webpack.config.js配置文件
     需求：需要运行webpack.dll.js文件
       命令 -->  
